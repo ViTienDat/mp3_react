@@ -15,11 +15,11 @@ const Header = () => {
             <IoIosArrowRoundForward size={30} />
           </span>
         </div>
-        <div className="w-4/6">
+        <div className="w-1/2">
           <Search />
         </div>
       </div>
-      <div className="flex items-center pb-[2px]">login</div>
+      <div className="flex items-center pb-[2px] mr-[15px]">login</div>
     </div>
   );
 };
