@@ -2,17 +2,20 @@ import actionTypes from "../actions/actionTypes";
 
 const initState = {
   banner: [],
+  seasontheme: {},
 };
 
 const appReducer = (state = initState, action) => {
   switch (action.type) {
     case actionTypes.GET_HOME:
-      console.log(1234);
       return {
         ...state,
         banner:
-          action.homeData?.find((item) => item.sectionType === "banner")
+          action.homeData?.find((item) => item.sectionId === "hSlider")
             ?.items || null,
+        seasontheme:
+          action.homeData?.find((item) => item.sectionId === "hSeasonTheme") ||
+          {},
       };
 
     default:

@@ -4,10 +4,12 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import * as actions from "../store/actions";
+import { useNavigate } from "react-router-dom";
 
 const Sliders = () => {
   const { banner } = useSelector((state) => state.app);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const settings = {
     dots: true,
@@ -17,10 +19,17 @@ const Sliders = () => {
     slidesToScroll: 1,
     autoplay: true,
   };
-
+  //
   const handleClickBanner = (item) => {
     if (item?.type === 1) {
+      dispatch(actions.setPlaylist(null));
       dispatch(actions.setCurSongId(item.encodeId));
+      dispatch(actions.play(true));
+    } else if (item?.type === 4) {
+      const albumPath = item?.link?.split(".")[0];
+      navigate(albumPath);
+    } else {
+      dispatch(actions.setPlaylist(null));
     }
   };
 
@@ -33,7 +42,7 @@ const Sliders = () => {
               src={item.banner}
               onClick={() => handleClickBanner(item)}
               alt="banner"
-              className="rounded-[10px]"
+              className="rounded-[10px] cursor-pointer"
             />
           </div>
         ))}
