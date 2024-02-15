@@ -9,3 +9,43 @@
 .slick-arrow {
     visibility: hidden;
 }
+
+.input-range {
+    -webkit-appearance: none;
+    
+}
+
+.input-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white; 
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.text-shadow-no1 {
+/* #4a90e2 */
+    text-shadow:
+        -1px -1px 0 #4a90e2,
+        1px -1px 0 #4a90e2,
+        -1px 1px 0 #4a90e2,
+        1px 1px 0 #4a90e2;
+}
+
+.text-shadow-no2 {
+    text-shadow:
+            -1px -1px 0 #50e3c2,
+            1px -1px 0 #50e3c2,
+            -1px 1px 0 #50e3c2,
+            1px 1px 0 #50e3c2;
+    /* #- */
+}
+.text-shadow-no3 {
+    /* #e35050 */
+    text-shadow:
+            -1px -1px 0 #e35050,
+            1px -1px 0 #e35050,
+            -1px 1px 0 #e35050,
+            1px 1px 0 #e35050;
+}

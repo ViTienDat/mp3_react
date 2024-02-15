@@ -13,7 +13,7 @@ const ListSongs = () => {
       </div>
       <div className="flex flex-col">
         {songs?.map((item) => (
-          <ListSong songData={item} key={item.encodeId} />
+          <ListSong songData={item} key={item.encodeId} type={3} />
         ))}
       </div>
     </div>

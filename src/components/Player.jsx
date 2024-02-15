@@ -5,9 +5,11 @@ import icons from "../ultils/icons";
 import * as actions from "../store/actions";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { Loading } from "./";
 
 const {
   TiHeartOutline,
+  CiViewList,
   BsThreeDots,
   PiShuffle,
   PiRepeat,
@@ -15,27 +17,34 @@ const {
   MdSkipPrevious,
   IoPlayCircleOutline,
   IoPauseCircleOutline,
+  IoVolumeHighOutline,
+  IoVolumeMuteOutline,
 } = icons;
 var intervalId;
-const Player = () => {
+const Player = ({ setIsShowRightSidebar }) => {
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
-  const { curSongId, isPlaying, songs } = useSelector((state) => state.music);
   const [songInfo, setSongInfo] = useState(null);
   const [curSeconds, setCurSeconds] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(true);
+  const [volume, setVolume] = useState(100);
   const dispatch = useDispatch();
   const [audio, setAudio] = useState(new Audio());
   const thumbRef = useRef();
   const trunkRef = useRef();
+  const { curSongId, isPlaying, songs } = useSelector((state) => state.music);
 
   useEffect(() => {
     const fecthDetailSong = async () => {
+      setIsLoaded(false);
       const [res1, res2] = await Promise.all([
         music.apiGetDetailSong(curSongId),
         music.getSong(curSongId),
       ]);
+      setIsLoaded(true);
       if (res1?.data?.err === 0) {
         setSongInfo(res1.data.data);
+        dispatch(actions.setCurSongData(res1.data.data));
       }
       if (res2?.data?.err === 0) {
         audio.pause();
@@ -82,6 +91,10 @@ const Player = () => {
     };
   }, [audio, isShuffle]);
 
+  useEffect(() => {
+    audio.volume = volume / 100;
+  }, [volume, audio]);
+
   const handleIsPlaying = () => {
     if (!isPlaying) {
       audio.play();
@@ -93,7 +106,6 @@ const Player = () => {
   };
 
   const handleClickProgressbar = (e) => {
-    // console.log(trunkRef.current.getBoundingClientRect());
     const trunkRect = trunkRef.current.getBoundingClientRect();
     const percent2 =
       Math.round(((e.clientX - trunkRect.left) * 10000) / trunkRect.width) /
@@ -106,7 +118,6 @@ const Player = () => {
   const handleNextSong = () => {
     if (songs) {
       let currentSongIndex;
-      // const currentSongIndex = songs.filter((item, index))
       songs?.forEach((item, index) => {
         if (item.encodeId === curSongId) {
           currentSongIndex = index;
@@ -120,7 +131,6 @@ const Player = () => {
   const handlePreSong = () => {
     if (songs) {
       let currentSongIndex;
-      // const currentSongIndex = songs.filter((item, index))
       songs?.forEach((item, index) => {
         if (item.encodeId === curSongId) {
           currentSongIndex = index;
@@ -137,20 +147,13 @@ const Player = () => {
     dispatch(actions.play(true));
   };
 
-  // const handleRepeat = () => {
-  //   if (songs) {
-  //     let currentSongIndex;
-  //     // const currentSongIndex = songs.filter((item, index))
-  //     songs?.forEach((item, index) => {
-  //       if (item.encodeId === curSongId) {
-  //         currentSongIndex = index;
-  //       }
-  //     });
-  //     dispatch(actions.setCurSongId(songs[currentSongIndex].encodeId));
-  //     dispatch(actions.play(true));
-  //   }
-  // };
-
+  const handleMuteVolume = () => {
+    if (volume > 0) {
+      setVolume(0);
+    } else {
+      setVolume(50);
+    }
+  };
   return (
     <div className="px-5 h-full flex gap-[10px]">
       <div className="flex-auto w-[30%]  flex items-center">
@@ -177,7 +180,7 @@ const Player = () => {
           </span>
         </div>
       </div>
-      <div className="flex-auto w-[40%] border border-white flex flex-col gap-2 items-center justify-center">
+      <div className="flex-auto w-[40%]   flex flex-col gap-2 items-center justify-center">
         <div className="flex gap-[14px] items-center">
           <span
             className={`${
@@ -206,7 +209,9 @@ const Player = () => {
             className="cursor-pointer rounded-full hover:text-blue-300"
             onClick={handleIsPlaying}
           >
-            {isPlaying ? (
+            {isLoaded === false ? (
+              <Loading />
+            ) : isPlaying ? (
               <IoPauseCircleOutline fontSize={40} />
             ) : (
               <IoPlayCircleOutline fontSize={40} />
@@ -249,7 +254,35 @@ const Player = () => {
           <div>{moment.utc(songInfo?.duration * 1000).format("mm:ss")}</div>
         </div>
       </div>
-      <div className="flex-auto w-[30%] border-red-500">volumn</div>
+      <div className="flex-auto w-[30%] border-red-500 flex items-center justify-center gap-2">
+        <span
+          className=" hover:bg-main-3 rounded-full cursor-pointer p-2 "
+          onClick={handleMuteVolume}
+        >
+          {volume > 0 ? (
+            <IoVolumeHighOutline size={20} />
+          ) : (
+            <IoVolumeMuteOutline size={20} />
+          )}
+        </span>
+        <input
+          className="w-[150px] h-[4px] hover:h-[6px] input-range rounded-lg"
+          type="range"
+          step={1}
+          min={0}
+          max={100}
+          value={volume}
+          onChange={(e) => setVolume(e.target.value)}
+        />
+      </div>
+      <div className="h-full items-center flex">
+        <CiViewList
+          className="p-2 hover:bg-main-3 rounded-full"
+          size={40}
+          onClick={() => setIsShowRightSidebar((prev) => !prev)}
+          title="Danh sách phát"
+        />
+      </div>
     </div>
   );
 };

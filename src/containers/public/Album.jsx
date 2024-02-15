@@ -13,8 +13,11 @@ const Album = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(actions.setCurAlbumId(pid));
     const fetchDetailPlaylist = async () => {
+      dispatch(actions.loading(true));
       const response = await music.apiGetDetailPlaylist(pid);
+      dispatch(actions.loading(false));
       if (response?.data?.err === 0) {
         setPlaylistData(response.data.data);
         dispatch(actions.setPlaylist(response?.data?.data?.song?.items));
@@ -24,7 +27,7 @@ const Album = () => {
   }, [pid]);
 
   return (
-    <div className="px-[60px] text-white w-full h-[80%] flex gap-8">
+    <div className="px-[60px] relative text-white w-full h-[80%] flex gap-8">
       <div className="flex-none w-1/3 flex flex-col">
         <img
           src={playlistData?.thumbnailM}
@@ -54,7 +57,7 @@ const Album = () => {
             <span>{playlistData.description}</span>
           </span>
           <div>
-            <ListSongs total={playlistData?.song?.total} />
+            <ListSongs />
           </div>
         </div>
       </Scrollbars>
