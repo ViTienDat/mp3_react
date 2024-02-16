@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import getChartHome from "../../apis/chart";
 import { RankList } from "../../components";
+import { useDispatch } from "react-redux";
+import * as actions from "../../store/actions";
 
 const HotNewSong = () => {
   const ref = useRef();
   const [data, setData] = useState(null);
   const [chartData, setchartData] = useState(null);
   const [chart, setChart] = useState(null);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     ref.current.scrollIntoView({
       behavior: "smooth",
@@ -16,8 +20,9 @@ const HotNewSong = () => {
   }, [chartData]);
   useEffect(() => {
     const fetchChartData = async () => {
+      dispatch(actions.loading(true));
       const response = await getChartHome();
-
+      dispatch(actions.loading(false));
       if (response.data.err === 0) {
         setchartData(response?.data?.data);
       }

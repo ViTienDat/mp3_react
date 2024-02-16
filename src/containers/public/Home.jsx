@@ -5,22 +5,17 @@ import {
   Section2,
   NewReLease,
   ChartSection,
-  LoadingData,
-  Loading,
 } from "../../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { LoadingData } from "../../components";
 
 const Home = () => {
   const { seasontheme, weekchart, heditortheme3, heditortheme, top100 } =
     useSelector((state) => state.app);
   return (
     <>
-      {seasontheme !== null &&
-      weekchart !== null &&
-      heditortheme3 !== null &&
-      heditortheme !== null &&
-      top100 !== null ? (
+      {seasontheme && weekchart && heditortheme3 && heditortheme && top100 ? (
         <div className="overflow-y-auto bg-[#170f23] px-[50px] text-[#DADADA] flex flex-col ">
           <div className=" text-white w-full">
             <Sliders />
@@ -49,9 +44,7 @@ const Home = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-white">
-          <LoadingData />
-        </div>
+        <div></div>
       )}
     </>
   );
